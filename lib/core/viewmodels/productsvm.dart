@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class ProductsVM extends ChangeNotifier{
   HttpRequest request = HttpRequest.instance;
   List<Product> allProducts = [];
+  List<Product> cartItems = [];
   int totalProducts = 0;
   Future<void> getProductsFromServer()async{
     Response<dynamic> res = await request.get(url: APIRoutes.products);
@@ -14,8 +15,8 @@ class ProductsVM extends ChangeNotifier{
     allProducts = products.map((item) => Product.fromJson(item)).toList();
     notifyListeners();
   }
-  addOne(){
-    totalProducts++;
+  addTOCart(Product p){
+    cartItems.add(p);
     notifyListeners();
   }
 }
