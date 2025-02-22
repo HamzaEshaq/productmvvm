@@ -5,6 +5,8 @@ import 'package:productmvvm/core/viewmodels/productsvm.dart';
 import 'package:productmvvm/helpers/route_generator.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/app_navigation_bar.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -12,6 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      bottomNavigationBar: AppNavigationBar(),
       appBar: AppBar(
         actions: [
            Padding(
@@ -23,7 +26,7 @@ class HomeScreen extends StatelessWidget {
                child: Badge(
                  label: Consumer<ProductsVM>(
                    builder: (context, pvm, child){
-                     return Text('${pvm.cartItems.length}');
+                     return Text('${pvm.totalInCart}');
                    },
                  ),
                 child: Icon(Icons.shopping_cart),
@@ -90,20 +93,84 @@ class HomeScreen extends StatelessWidget {
                         decoration: BoxDecoration(color: Colors.white,
                         borderRadius: BorderRadius.circular(10),),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.network(product.allProducts[index].thumbnail),
-                            ListTile(
-                              leading: InkWell(
-                                onTap: (){
-                                  product.addTOCart(product.allProducts[index]);
-                                  print('${product.cartItems.length}');
-                                },
-                                child: Icon(Icons.add_shopping_cart, color: Colors.red.shade900,),
+                            Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 70),
+                                child: Image.network(product.allProducts[index].thumbnail),
                               ),
-                              trailing: Text('${product.allProducts[index].price}', style: TextStyle(color: Colors.red.shade900),),
-                              subtitle: Text(product.allProducts[index].category),
-                              title: Text(product.allProducts[index].title),
                             ),
+                            Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 30, left: 15),
+                                child: Text(
+                                    product.allProducts[index].title,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4, left: 15),
+                                child: Text(
+                                  product.allProducts[index].category,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 17),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7,
+                                      child: Text(
+                                        '\$${product.allProducts[index].price}', style: TextStyle(color: Colors.red.shade900, fontSize: 15, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: InkWell(
+                                        onTap: (){
+                                          product.toggleFavorite(product.allProducts[index]);
+                                          product.checkFavorites(product.allProducts[index]);
+                                        },
+                                        child: Selector<ProductsVM, bool>(
+                                          selector: (context, product) => product.allProducts[index].isFavorite,
+                                            builder: (context, value, child){
+                                              return value ? Icon(Icons.favorite, color: Colors.red.shade900,): Icon(Icons.favorite_border_sharp, color: Colors.red.shade900,);
+                                            },
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: InkWell(
+                                        onTap: (){
+                                          product.addTOCart(product.allProducts[index]);
+                                        },
+                                        child: Icon(Icons.add_shopping_cart, color: Colors.red.shade900,),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 7,
+                            )
                           ],
                         ),
                       );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productmvvm/core/viewmodels/productsvm.dart';
+import 'package:productmvvm/core/views/widgets/app_navigation_bar.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: AppNavigationBar(),
       appBar: AppBar(),
       body: Consumer<ProductsVM>(
           builder: (context, productInCart, child){
@@ -59,44 +61,58 @@ class CartScreen extends StatelessWidget {
                           spacing: 40,
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5,),
-                                child: Icon(Icons.delete, color: Colors.grey.shade300,),
+                              child: InkWell(
+                                onTap: (){
+                                  productInCart.minimizeTotalInCart(productInCart.cartItems[index]);
+                                  productInCart.removeFromCart(productInCart.cartItems[index]);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 5,),
+                                  child: Icon(Icons.delete, color: Colors.grey.shade400,),
+                                ),
                               ),
                             ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 5, bottom: 10),
-                                child: Container(
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.shade50.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 20),
-                                          child: Center(
-                                            child: InkWell(
-                                              child: Icon(Icons.minimize_rounded, color: Colors.black, size: 19,),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: (){
+                                          productInCart.minimizeCart(productInCart.cartItems[index]);
+                                        },
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                              color: Colors.grey.shade200,
                                             ),
-                                          ),
+                                            height: 50,
+                                            width: double.infinity,
+                                            child: Icon(Icons.remove, color: Colors.black, size: 19,)
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Center(child: Text('4')),
-                                      ),
-                                      Expanded(
-                                        child: Center(
-                                          child: InkWell(
-                                            child: Icon(Icons.add, color: Colors.black, size: 19,),
+                                    ),
+                                    Expanded(
+                                      child: Center(child: Text('${productInCart.cartItems[index].quantity}')),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: (){
+                                          productInCart.addTOCart(productInCart.cartItems[index]);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.red.shade900,
                                           ),
+                                            height: 50,
+                                            width: double.infinity,
+                                            child: Icon(Icons.add, color: Colors.white, size: 19,)
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
